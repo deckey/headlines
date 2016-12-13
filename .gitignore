@@ -1,5 +1,5 @@
 
 .idea/
-.wsgi
+*.wsgi
 headlines.iml
 venv/
