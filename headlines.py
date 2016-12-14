@@ -4,7 +4,7 @@ from flask import render_template
 
 app = Flask(__name__)
 
-BBC_FEEDS = {'bbc': 'http://feeds.bbci.co.uk/news/rss.xml',
+RSS_FEEDS = {'bbc': 'http://feeds.bbci.co.uk/news/rss.xml',
              'cnn': 'http://rss.cnn.com/rss/edition.rss',
              'fox': 'http://feeds.foxnews.com/foxnews/latest',
              'espn': 'http://www.espn.com/espn/rss/news',
@@ -15,10 +15,13 @@ BBC_FEEDS = {'bbc': 'http://feeds.bbci.co.uk/news/rss.xml',
 @app.route('/')
 @app.route('/<link>')
 def get_feed(link='bbc'):
-    feed = feedparser.parse(BBC_FEEDS[link])
+    if link not in RSS_FEEDS:
+        link = 'bbc'
+    feed = feedparser.parse(RSS_FEEDS[link])
     return render_template('index.html',
                            articles=feed['entries'][:10],
-                           link=link.upper())
+                           link=link.upper(),
+                           feeds=sorted(RSS_FEEDS))
 
 
 if __name__ == '__main__':

@@ -2,15 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}">
     <title>Headlines</title>
 </head>
 <body>
-    <a href="/fox">FOX</a>
-    <a href="/cnn">CNN</a>
-    <a href="/bbc">BBC</a>
-    <a href="/espn">ESPN</a>
-    <a href="/nba">NBA</a>
-    <a href="/nasa">NASA</a>
+    {% for feed in feeds: %}
+        <a href="/{{feed}}">{{feed.upper()}}</a>
+    {% endfor %}
     <h1>{{ link }}</h1>
     <h1>Latest Headlines</h1>
     {% for article in articles %}
