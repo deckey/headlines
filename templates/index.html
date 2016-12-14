@@ -6,13 +6,21 @@
     <title>Headlines</title>
 </head>
 <body>
+    <h2>Current weather</h2>
+    <p>City: <b>{{ weather.city }}, {{ weather.country }}</b></p>
+    <p>{{ weather.description.capitalize() }} | {{ weather.temperature}}&#8451; </p>
+    <p> Wind {{ weather.wind }}</p>
+
+    <hr/>
+    <h2>Latest Headlines</h2>
+
     {% for feed in feeds: %}
         <a href="/{{feed}}">{{feed.upper()}}</a>
     {% endfor %}
-    <h1>{{ link }}</h1>
-    <h1>Latest Headlines</h1>
+    <hr/>
+
     {% for article in articles %}
-    <b><a href="{{article.link}}"> {{ article.title }}</a></b><br/>
+        <b><a href="{{article.link}}"> {{ article.title }}</a></b><br/>
         <i>{{ article.published }}</i><br/>
         <p>{{ article.summary }}</p>
     <hr/>
