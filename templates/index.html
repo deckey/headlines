@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Headlines</title>
+</head>
+<body>
+    <a href="/fox">FOX</a>
+    <a href="/cnn">CNN</a>
+    <a href="/bbc">BBC</a>
+    <a href="/espn">ESPN</a>
+    <a href="/nba">NBA</a>
+    <a href="/nasa">NASA</a>
+    <h1>{{ link }}</h1>
+    <h1>Latest Headlines</h1>
+    {% for article in articles %}
+    <b><a href="{{article.link}}"> {{ article.title }}</a></b><br/>
+        <i>{{ article.published }}</i><br/>
+        <p>{{ article.summary }}</p>
+    <hr/>
+    {% endfor %}
+</body>
+</html>
