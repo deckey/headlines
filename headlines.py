@@ -1,13 +1,8 @@
 #!/usr/local/bin/python3
-import json
-import math
-import urllib
-
 import feedparser
-import urllib.request
-from flask import Flask
-from flask import render_template
-from flask import request
+import math
+import requests
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
@@ -22,7 +17,7 @@ DEFAULTS = {'link': 'bbc',
             'city': 'Amsterdam',
             'currency_from': 'EUR',
             'currency_to': 'RSD',
-            'currencies': ['AUD', 'CAD', 'CHF', 'EUR', 'RSD', 'SEK']}
+            'currencies': ['AUD', 'CAD', 'CHF', 'EUR', 'RSD', 'SEK', 'USD']}
 
 WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather?q={}&APPID=dd99b39031d13629eb69a50e9a4457c7&units=metric"
 CURRENCY_URL = "https://openexchangerates.org//api/latest.json?app_id=445bea4da73a4b828cdd0166859dfda7"
@@ -57,8 +52,8 @@ def get_weather():
         query = DEFAULTS['city']
     query = query.replace(" ", "")
     api_url = WEATHER_URL.format(query)
-    response = urllib.request.urlopen(api_url).read().decode()
-    data = json.loads(response)
+    response = requests.get(api_url)
+    data = response.json()
     weather = None
     if data.get('weather'):
         weather = {'city': data['name'],
@@ -81,8 +76,8 @@ def get_currencies():
 
 
 def get_rates(frm, to):
-    all_currency = urllib.request.urlopen(CURRENCY_URL).read().decode()
-    parsed = json.loads(all_currency)
+    all_currency = requests.get(CURRENCY_URL)
+    parsed = all_currency.json()
     frm_rate = parsed.get('rates')[frm.upper()]
     to_rate = parsed.get('rates')[to.upper()]
     rate = round(to_rate / frm_rate, 4)
