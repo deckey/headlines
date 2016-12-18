@@ -1,8 +1,10 @@
 #!/usr/local/bin/python3
-import feedparser
+import datetime
 import math
+
+import feedparser
 import requests
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, make_response
 
 app = Flask(__name__)
 
@@ -25,33 +27,40 @@ CURRENCY_URL = "https://openexchangerates.org//api/latest.json?app_id=445bea4da7
 
 @app.route('/')
 def index():
-    return render_template('index.html',
-                           articles=get_feed(),
-                           feeds=sorted(RSS_FEEDS),
-                           weather=get_weather(),
-                           currency_from=get_currencies()[0],
-                           currency_to=get_currencies()[1],
-                           rate=get_rates(*get_currencies()),
-                           currencies=sorted(DEFAULTS['currencies']))
+    articles, link = get_feed()
+    feeds = sorted(RSS_FEEDS)
+    weather = get_weather()
+    currency_from, currency_to = get_currencies()
+    rate = get_rate(*get_currencies())
+
+    response = make_response(render_template('index.html',
+                                             articles=articles,
+                                             feeds=feeds,
+                                             link=link,
+                                             weather=weather,
+                                             currency_from=currency_from,
+                                             currency_to=currency_to,
+                                             rate=rate,
+                                             currencies=sorted(DEFAULTS['currencies'])))
+
+    expires = datetime.datetime.now() + datetime.timedelta(days=365)
+    response.set_cookie("link", link, expires=expires)
+    response.set_cookie("city", weather['city'], expires=expires)
+    response.set_cookie("currency_from", currency_from, expires=expires)
+    response.set_cookie("currency_to", currency_to, expires=expires)
+    return response
 
 
 def get_feed():
-    query = request.args.get('link')
-    if not query or query.lower() not in RSS_FEEDS:
-        link = DEFAULTS['link']
-    else:
-        link = query.lower()
-
+    link = get_value_with_defaults('link')
     feed = feedparser.parse(RSS_FEEDS[link])
-    return feed['entries'][:10]
+    return feed['entries'][:10], link
 
 
 def get_weather():
-    query = request.args.get('city')
-    if not query:
-        query = DEFAULTS['city']
-    query = query.replace(" ", "")
-    api_url = WEATHER_URL.format(query)
+    city = get_value_with_defaults('city')
+    city = city.replace(" ", "")
+    api_url = WEATHER_URL.format(city)
     response = requests.get(api_url)
     data = response.json()
     weather = None
@@ -66,22 +75,26 @@ def get_weather():
 
 
 def get_currencies():
-    currency_from = request.args.get('currency_from')
-    if not currency_from:
-        currency_from = DEFAULTS['currency_from']
-    currency_to = request.args.get('currency_to')
-    if not currency_to:
-        currency_to = DEFAULTS['currency_to']
+    currency_from = get_value_with_defaults('currency_from')
+    currency_to = get_value_with_defaults('currency_to')
     return currency_from, currency_to
 
 
-def get_rates(frm, to):
+def get_rate(frm, to):
     all_currency = requests.get(CURRENCY_URL)
     parsed = all_currency.json()
     frm_rate = parsed.get('rates')[frm.upper()]
     to_rate = parsed.get('rates')[to.upper()]
     rate = round(to_rate / frm_rate, 4)
     return rate
+
+
+def get_value_with_defaults(key):
+    if request.args.get(key):
+        return request.args.get(key)
+    if request.cookies.get(key):
+        return request.cookies.get(key)
+    return DEFAULTS[key]
 
 
 if __name__ == '__main__':
