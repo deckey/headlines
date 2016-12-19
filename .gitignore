@@ -3,3 +3,5 @@
 *.wsgi
 headlines.iml
 venv/
+__pycache__/
+config.py
