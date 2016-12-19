@@ -18,7 +18,7 @@ Create a 'config.py' file in the route directory and 2 variables inside it
 Free
 
 #### Deployed version
-[Headlines App](http://http://138.68.86.59/)
+[Headlines App](http://138.68.86.59/)
 
 
 
