@@ -1,4 +1,5 @@
 #!/usr/local/bin/python3
+import config
 import datetime
 import math
 
@@ -21,8 +22,9 @@ DEFAULTS = {'link': 'bbc',
             'currency_to': 'RSD',
             'currencies': ['AUD', 'CAD', 'CHF', 'EUR', 'RSD', 'SEK', 'USD']}
 
-WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather?q={}&APPID=dd99b39031d13629eb69a50e9a4457c7&units=metric"
-CURRENCY_URL = "https://openexchangerates.org//api/latest.json?app_id=445bea4da73a4b828cdd0166859dfda7"
+
+WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather?q={city}&APPID={wx_appid}&units=metric"
+CURRENCY_URL = "https://openexchangerates.org//api/latest.json?app_id={curr_appid}"
 
 
 @app.route('/')
@@ -60,7 +62,7 @@ def get_feed():
 def get_weather():
     city = get_value_with_defaults('city')
     city = city.replace(" ", "")
-    api_url = WEATHER_URL.format(city)
+    api_url = WEATHER_URL.format(city=city, wx_appid=config.WEATHER_APPID)
     response = requests.get(api_url)
     data = response.json()
     weather = None
@@ -81,7 +83,7 @@ def get_currencies():
 
 
 def get_rate(frm, to):
-    all_currency = requests.get(CURRENCY_URL)
+    all_currency = requests.get(CURRENCY_URL.format(curr_appid=config.CURRENCY_APPID))
     parsed = all_currency.json()
     frm_rate = parsed.get('rates')[frm.upper()]
     to_rate = parsed.get('rates')[to.upper()]
