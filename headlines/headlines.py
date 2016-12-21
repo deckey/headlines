@@ -1,11 +1,12 @@
 #!/usr/local/bin/python3
-import config
 import datetime
 import math
 
 import feedparser
 import requests
 from flask import Flask, render_template, request, make_response
+
+import config
 
 app = Flask(__name__)
 
