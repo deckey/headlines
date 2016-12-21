@@ -19,7 +19,7 @@
             <h3>News</h3>
             <h3>
                 {% for feed in feeds: %}
-                <a class="btn btn-default {% if (feed==link) %} btn-primary {% endif %}" href="/?link={{feed}}">{{currency}}
+                <a class="btn btn-default {% if (feed==link) %} btn-primary {% endif %}" href="?link={{feed}}">{{currency}}
                     {{feed.upper()}}</a>
                 {% endfor %}
             </h3>

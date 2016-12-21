@@ -9,7 +9,7 @@ App uses requests.cookies module to keep user's input between requests, while fe
 Project was created as part of learning process of the Flask framework
 
 #### Installation / Config
-Create a 'config.py' file in the route directory and 2 variables inside it
+Create a 'config.py' file in the /headlines directory and 2 variables inside it
 * WEATHER_APPID = "id-that-you-get-from-open-weather"
 * CURRENCY_APPID = "app-id-from-exchange-rates"
 
@@ -18,7 +18,7 @@ Create a 'config.py' file in the route directory and 2 variables inside it
 Free
 
 #### Deployed version
-[Headlines App](http://138.68.86.59/)
+[Headlines App](http://138.68.86.59/headlines)
 
 
 
