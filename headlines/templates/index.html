@@ -10,7 +10,7 @@
 <body>
 <div class="container">
     <div class="row container bg-primary ">
-        <h4>Headlines :: A Python/Flask mini-project</h4>
+        <h4><a href="/"> Headlines </a>:: A Python/Flask mini-project</h4>
     </div>
 
     <div class="row well">
@@ -26,7 +26,7 @@
             <hr/>
 
             {% for article in articles[:5] %}
-            <b><a href="{{article.link}}"> {{ article.title }}</a></b><br/>
+            <b><a href="{{article.link}}"> {{ article.title }}</a></b>
             <i>{{ article.published }}</i><br/>
             <p>{{ article.summary }}</p>
             {% endfor %}

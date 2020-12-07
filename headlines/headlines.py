@@ -1,24 +1,20 @@
 #!/usr/local/bin/python3
-import datetime
-import math
-
-import feedparser
-import requests
+import datetime, math, feedparser, requests, config
 from flask import Flask, render_template, request, make_response
-
-import config
 
 app = Flask(__name__)
 
 RSS_FEEDS = {'bbc': 'http://feeds.bbci.co.uk/news/rss.xml',
              'cnn': 'http://rss.cnn.com/rss/edition.rss',
+             'dw': 'https://rss.dw.com/rdf/rss-en-all',
              'espn': 'http://www.espn.com/espn/rss/news',
              'fox': 'http://feeds.foxnews.com/foxnews/latest',
              'nasa': 'http://www.nasa.gov/rss/dyn/breaking_news.rss',
-             'nba': 'http://www.espn.com/espn/rss/nba/news'}
+             'nba': 'http://www.espn.com/espn/rss/nba/news',
+             }
 
 DEFAULTS = {'link': 'bbc',
-            'city': 'Amsterdam',
+            'city': 'Munich',
             'currency_from': 'EUR',
             'currency_to': 'RSD',
             'currencies': ['AUD', 'CAD', 'CHF', 'EUR', 'RSD', 'SEK', 'USD']}
@@ -101,4 +97,4 @@ def get_value_with_defaults(key):
 
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
