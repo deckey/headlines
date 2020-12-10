@@ -1,8 +1,11 @@
 #!/usr/local/bin/python3
-import datetime, math, feedparser, requests, config
+import datetime, math, feedparser, requests, config, os
 from flask import Flask, render_template, request, make_response
+from flask_reverse_proxy_fix.middleware import ReverseProxyPrefixFix
 
 app = Flask(__name__)
+app.config['REVERSE_PROXY_PATH'] = '/headlines'
+ReverseProxyPrefixFix(app)
 
 RSS_FEEDS = {'bbc': 'http://feeds.bbci.co.uk/news/rss.xml',
              'cnn': 'http://rss.cnn.com/rss/edition.rss',
