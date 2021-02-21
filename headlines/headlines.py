@@ -1,11 +1,16 @@
 #!/usr/local/bin/python3
-import datetime, math, feedparser, requests, config, os
+import datetime, math, feedparser, requests, os
 from flask import Flask, render_template, request, make_response
 from flask_reverse_proxy_fix.middleware import ReverseProxyPrefixFix
+from dotenv import load_dotenv
+load_dotenv()
+
+WEATHER_APPID = os.environ.get('WEATHER_APPID')
+CURRENCY_APPID = os.environ.get('CURRENCY_APPID')
+PORT = os.environ.get('PORT')
+DEBUG = os.environ.get('DEBUG')
 
 app = Flask(__name__)
-app.config['REVERSE_PROXY_PATH'] = '/headlines'
-ReverseProxyPrefixFix(app)
 
 RSS_FEEDS = {'bbc': 'http://feeds.bbci.co.uk/news/rss.xml',
              'cnn': 'http://rss.cnn.com/rss/edition.rss',
@@ -62,7 +67,7 @@ def get_feed():
 def get_weather():
     city = get_value_with_defaults('city')
     city = city.replace(" ", "")
-    api_url = WEATHER_URL.format(city=city, wx_appid=config.WEATHER_APPID)
+    api_url = WEATHER_URL.format(city=city, wx_appid=WEATHER_APPID)
     response = requests.get(api_url)
     data = response.json()
     weather = None
@@ -83,7 +88,7 @@ def get_currencies():
 
 
 def get_rate(frm, to):
-    all_currency = requests.get(CURRENCY_URL.format(curr_appid=config.CURRENCY_APPID))
+    all_currency = requests.get(CURRENCY_URL.format(curr_appid=CURRENCY_APPID))
     parsed = all_currency.json()
     frm_rate = parsed.get('rates')[frm.upper()]
     to_rate = parsed.get('rates')[to.upper()]
@@ -100,4 +105,4 @@ def get_value_with_defaults(key):
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=os.environ.get('PORT'), debug=os.environ.get('DEBUG'))
