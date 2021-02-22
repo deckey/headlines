@@ -87,7 +87,6 @@ def get_currencies():
 
 def get_rate(frm, to):
     all_currency = requests.get(CURRENCY_URL.format(curr_appid=CURRENCY_APPID))
-    print(all_currency.json().get('rates'))
     parsed = all_currency.json()
     frm_rate = parsed.get('rates')[frm.upper()]
     to_rate = parsed.get('rates')[to.upper()]
