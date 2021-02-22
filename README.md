@@ -18,7 +18,7 @@ Create a 'config.py' file in the /headlines directory and 2 variables inside it
 Free
 
 #### Deployed version
-[Headlines App](http://138.68.86.59/headlines)
+[Headlines App](https://headlines-upxolv537q-ey.a.run.app/)
 
 
 
