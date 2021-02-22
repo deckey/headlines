@@ -38,7 +38,7 @@ def index():
     feeds = sorted(RSS_FEEDS)
     weather = get_weather()
     currency_from, currency_to = get_currencies()
-    rate = get_rate(*get_currencies())
+    rate = get_rate(currency_from, currency_to)
 
     response = make_response(render_template('index.html',
                                              articles=articles,
@@ -82,13 +82,12 @@ def get_weather():
 
 
 def get_currencies():
-    currency_from = get_value_with_defaults('currency_from')
-    currency_to = get_value_with_defaults('currency_to')
-    return currency_from, currency_to
+    return get_value_with_defaults('currency_from'), get_value_with_defaults('currency_to')
 
 
 def get_rate(frm, to):
     all_currency = requests.get(CURRENCY_URL.format(curr_appid=CURRENCY_APPID))
+    print(all_currency.json().get('rates'))
     parsed = all_currency.json()
     frm_rate = parsed.get('rates')[frm.upper()]
     to_rate = parsed.get('rates')[to.upper()]
