@@ -6,3 +6,10 @@ __pycache__
 headlines.iml
 config.py
 **/.DS_Store
+.dockerignore
+.env
+build.sh
+manifests/
+okteto.yml
+.git
+.gitignore
