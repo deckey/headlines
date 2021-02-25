@@ -4,8 +4,6 @@ import datetime, math, feedparser, requests
 from flask import Flask, render_template, request, make_response
 
 # config
-RSS_FEEDS = settings.RSS_FEEDS
-DEFAULTS = settings.DEFAULTS
 WEATHER_URL = settings.WEATHER_URL
 CURRENCY_URL = settings.CURRENCY_URL
 
@@ -14,7 +12,7 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     articles, link = get_feed()
-    feeds = sorted(RSS_FEEDS)
+    feeds = sorted(settings.RSS_FEEDS)
     weather = get_weather()
     currency_from, currency_to = get_currencies()
     rate = get_rate(currency_from, currency_to)
@@ -27,7 +25,7 @@ def index():
                                              currency_from=currency_from,
                                              currency_to=currency_to,
                                              rate=rate,
-                                             currencies=sorted(DEFAULTS['currencies'])))
+                                             currencies=sorted(settings.DEFAULTS['currencies'])))
 
     expires = datetime.datetime.now() + datetime.timedelta(days=365)
     response.set_cookie("link", link, expires=expires)
@@ -39,16 +37,23 @@ def index():
 
 def get_feed():
     link = get_value_with_defaults('link')
-    feed = feedparser.parse(RSS_FEEDS[link])
+    feed = feedparser.parse(settings.RSS_FEEDS[link])
     return feed['entries'][:10], link
 
 
 def get_weather():
     city = get_value_with_defaults('city')
     api_url = WEATHER_URL.format(city=city, wx_appid=settings.WEATHER_APPID)
-    response = requests.get(api_url)
-    data = response.json()
+    data = requests.get(api_url).json()
     weather = None
+    if data.get('message') == 'city not found':
+        weather = None
+        weather = {'city': 'Not found',
+                   'country': '',
+                   'description': '',
+                   'temperature': 'n/a',
+                   'wind': 'n/a'
+                   }
     if data.get('weather'):
         weather = {'city': data['name'],
                    'country': data['sys']['country'],
@@ -77,7 +82,7 @@ def get_value_with_defaults(key):
         return request.args.get(key)
     if request.cookies.get(key):
         return request.cookies.get(key)
-    return DEFAULTS[key]
+    return settings.DEFAULTS[key]
 
 
 if __name__ == '__main__':
