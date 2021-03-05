@@ -46,6 +46,7 @@ def get_weather():
     api_url = WEATHER_URL.format(city=city, wx_appid=settings.WEATHER_APPID)
     data = requests.get(api_url).json()
     weather = None
+    
     if data.get('message') == 'city not found':
         weather = None
         weather = {'city': 'Not found',
@@ -83,7 +84,6 @@ def get_value_with_defaults(key):
     if request.cookies.get(key):
         return request.cookies.get(key)
     return settings.DEFAULTS[key]
-
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=settings.PORT, debug=settings.DEBUG)
